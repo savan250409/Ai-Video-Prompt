@@ -4,7 +4,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>@yield('title', config('app.name')) — NGD Admin</title>
   <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-  <link rel="icon" href="{{ asset('kaiadmin/img/kaiadmin/favicon.ico') }}" type="image/x-icon" />
+  <link rel="icon" href="{{ asset('img/ngd-logo.png') }}" type="image/png" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <script src="{{ asset('kaiadmin/js/plugin/webfont/webfont.min.js') }}"></script>
@@ -32,16 +32,18 @@
     <div class="sidebar" data-background-color="dark">
       <div class="sidebar-logo">
         <div class="logo-header" data-background-color="dark">
-          <a href="{{ route('dashboard') }}" class="logo">
-            <span style="color:#fff;font-weight:700;font-size:18px;letter-spacing:.5px;">
-              <i class="fas fa-film me-2"></i>{{ config('app.name') }}
-            </span>
+          <a href="{{ route('dashboard') }}" class="logo ngd-logo-wrap">
+            <img src="{{ asset('img/ngd-logo.png') }}" alt="NGD Technolab" class="ngd-sidebar-logo">
+            <span class="ngd-admin-label">NGD Admin</span>
           </a>
-          <div class="nav-toggle">
+          <div class="nav-toggle" style="display:none;">
             <button class="btn btn-toggle toggle-sidebar"><i class="gg-menu-right"></i></button>
             <button class="btn btn-toggle sidenav-toggler"><i class="gg-menu-left"></i></button>
           </div>
-          <button class="topbar-toggler more"><i class="gg-more-vertical-alt"></i></button>
+          <button class="topbar-toggler more" style="display:none;"><i class="gg-more-vertical-alt"></i></button>
+          <button type="button" class="ngd-sidebar-toggle" id="ngdSidebarToggle" title="Toggle Sidebar">
+            <i class="fas fa-bars"></i>
+          </button>
         </div>
       </div>
 
@@ -108,16 +110,18 @@
       <div class="main-header">
         <div class="main-header-logo">
           <div class="logo-header" data-background-color="dark">
-            <a href="{{ route('dashboard') }}" class="logo">
-              <span style="color:#fff;font-weight:700;font-size:16px;">
-                <i class="fas fa-film me-2"></i>{{ config('app.name') }}
-              </span>
+            <a href="{{ route('dashboard') }}" class="logo ngd-logo-wrap">
+              <img src="{{ asset('img/ngd-logo.png') }}" alt="NGD Technolab" class="ngd-sidebar-logo">
+              <span class="ngd-admin-label">NGD Admin</span>
             </a>
-            <div class="nav-toggle">
+            <div class="nav-toggle" style="display:none;">
               <button class="btn btn-toggle toggle-sidebar"><i class="gg-menu-right"></i></button>
               <button class="btn btn-toggle sidenav-toggler"><i class="gg-menu-left"></i></button>
             </div>
-            <button class="topbar-toggler more"><i class="gg-more-vertical-alt"></i></button>
+            <button class="topbar-toggler more" style="display:none;"><i class="gg-more-vertical-alt"></i></button>
+            <button type="button" class="ngd-sidebar-toggle" id="ngdSidebarToggle2" title="Toggle Sidebar">
+              <i class="fas fa-bars"></i>
+            </button>
           </div>
         </div>
 
@@ -170,19 +174,6 @@
       <!-- End Navbar -->
 
       <div class="container-fluid" style="padding-top:0;">
-        @if(session('success'))
-          <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          </div>
-        @endif
-        @if(session('error'))
-          <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-            {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          </div>
-        @endif
-
         @yield('content')
       </div>
 
@@ -195,9 +186,9 @@
               </li>
             </ul>
           </nav>
-          <div class="copyright">
-            {{ date('Y') }}, made with <i class="fas fa-heart heart text-danger"></i> by
-            <a href="#">NGD Admin</a>
+          <div class="copyright d-flex align-items-center gap-2">
+            <img src="{{ asset('img/ngd-logo.png') }}" alt="NGD Technolab" style="height:22px;object-fit:contain;">
+            {{ date('Y') }} &copy; NGD Technolab
           </div>
         </div>
       </footer>
@@ -224,5 +215,38 @@
   </script>
   {{-- NGD Admin custom JS (single file for entire panel) --}}
   <script src="{{ asset('js/ngd-admin.js') }}"></script>
+
+  <script>
+  (function () {
+    function doToggle() {
+      var body = document.body;
+      if (body.classList.contains('sidebar-mini')) {
+        // sidebar is collapsed → expand it
+        var btn = document.querySelector('.sidenav-toggler');
+        if (btn) btn.click();
+      } else {
+        // sidebar is expanded → collapse it
+        var btn = document.querySelector('.toggle-sidebar');
+        if (btn) btn.click();
+      }
+    }
+    document.querySelectorAll('.ngd-sidebar-toggle').forEach(function (el) {
+      el.addEventListener('click', doToggle);
+    });
+  })();
+  </script>
+
+  {{-- SweetAlert2 --}}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  @if(session('success'))
+  <script>
+    Swal.fire({ icon: 'success', title: 'Success', text: @json(session('success')), timer: 2500, showConfirmButton: false, toast: false, customClass: { popup: 'ngd-swal-popup' } });
+  </script>
+  @endif
+  @if(session('error'))
+  <script>
+    Swal.fire({ icon: 'error', title: 'Error', text: @json(session('error')), showConfirmButton: true, customClass: { popup: 'ngd-swal-popup' } });
+  </script>
+  @endif
 </body>
 </html>

@@ -3,7 +3,11 @@
 @section('title', 'API List')
 
 @section('content')
-@php $base = rtrim(config('app.url'), '/') . '/api/v1/ngd'; @endphp
+@php
+  $dynamicRoot = request()->getScheme() . '://' . request()->getHttpHost() . '/';
+  $apiBase     = $dynamicRoot;
+  $base        = rtrim($dynamicRoot, '/') . '/api/v1/ngd';
+@endphp
 <div class="page-inner">
 
   <div class="page-header-bar">
@@ -17,28 +21,6 @@
 
   {{-- ── Module Badge ──────────────────────────────────────────── --}}
   <span class="api-module-badge blue">NGD Module</span>
-
-  {{-- ── Authentication notice ───────────────────────────────── --}}
-  <div class="api-auth-box">
-    <div class="api-auth-title">
-      <i class="fas fa-lock me-2"></i> Authentication Required
-    </div>
-    <div class="api-auth-body">
-      <div class="api-auth-row">
-        <span class="api-auth-lbl">Header</span>
-        <span class="api-auth-key">Authorization</span>
-      </div>
-      <div class="api-auth-row">
-        <span class="api-auth-lbl">Value</span>
-        <span class="api-auth-val">
-          Bearer &nbsp;<span class="api-auth-var">&#123;&#123; NGD_API_TOKEN &#125;&#125;</span>
-        </span>
-      </div>
-      <div class="api-auth-note">
-        All endpoints require this header. Request without it or with an invalid token returns <strong>401 Unauthorized</strong>.
-      </div>
-    </div>
-  </div>
 
   {{-- ── 2-column card grid ───────────────────────────────────── --}}
   <div class="api-grid">
@@ -119,4 +101,14 @@
   </div>{{-- /api-grid --}}
 
 </div>
+<script>
+function copyBaseUrl(btn) {
+  navigator.clipboard.writeText(btn.dataset.url).then(function() {
+    var icon = btn.querySelector('i');
+    icon.className = 'fas fa-check';
+    btn.style.color = '#28a745';
+    setTimeout(function() { icon.className = 'fas fa-copy'; btn.style.color = ''; }, 1500);
+  });
+}
+</script>
 @endsection

@@ -43,7 +43,7 @@
         @if($category->category_image && count($category->category_image) > 0)
           <div class="img-preview-wrap">
             @foreach($category->category_image as $img)
-              <img src="{{ asset('upload/ngendev/category_thumbnail_image/' . $img) }}"
+              <img src="{{ asset('upload/ngendev/videos/' . rawurlencode($category->category_name) . '/category_thumbnail_image/' . $img) }}"
                    class="img-preview" alt="Current image"
                    onerror="this.style.opacity=.3">
             @endforeach

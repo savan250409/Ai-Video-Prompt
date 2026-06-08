@@ -11,12 +11,6 @@
       <p>Manage all Ngendev videos in the system</p>
     </div>
     <div class="header-right">
-      <a href="{{ route('ngendev.videos.index', ['name_change' => 1]) }}" class="btn-pill">
-        <i class="fas fa-exchange-alt me-1"></i> Name Change
-      </a>
-      <a href="{{ route('ngendev.videos.reindex') }}" class="btn-pill">
-        <i class="fas fa-sort-numeric-down me-1"></i> Indexing
-      </a>
       <span class="stat-pill">
         <i class="fas fa-film"></i> Total: {{ $totalCount }} Videos
       </span>
@@ -25,19 +19,6 @@
       </a>
     </div>
   </div>
-
-  @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" style="border-radius:10px;font-size:13px;" role="alert">
-      <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  @endif
-  @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" style="border-radius:10px;font-size:13px;" role="alert">
-      {{ session('error') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  @endif
 
   <!-- ===== VIDEO TABLE ===== -->
   <div class="table-card">
@@ -83,8 +64,6 @@
             <th>Thumbnail</th>
             <th>Video</th>
             <th>Prompt</th>
-            <th>No Of Video Image</th>
-            <th>Name Change</th>
             <th></th>
           </tr>
         </thead>
@@ -118,23 +97,6 @@
               </div>
             </td>
             <td>
-              @if($video->no_of_video && $video->category)
-                <img src="{{ asset('upload/ngendev/videos/' . $video->category->category_name . '/no_of_video_image/' . $video->no_of_video) }}"
-                     class="thumb-img" alt="no-of-video"
-                     onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';">
-                <span class="thumb-placeholder" style="display:none;"><i class="fas fa-image"></i></span>
-              @else
-                <span class="thumb-placeholder"><i class="fas fa-image"></i></span>
-              @endif
-            </td>
-            <td class="text-center">
-              @if($video->name_change)
-                <span class="badge-nc"><i class="fas fa-exchange-alt me-1"></i>Yes</span>
-              @else
-                <span style="color:#ccc;font-size:12px;">—</span>
-              @endif
-            </td>
-            <td>
               <div style="display:flex;gap:6px;">
                 <a href="{{ route('ngendev.videos.edit', $video->id) }}" class="btn-edit" title="Edit">
                   <i class="fas fa-pencil-alt"></i>
@@ -151,7 +113,7 @@
           </tr>
           @empty
           <tr>
-            <td colspan="7" class="text-center text-muted py-4">No videos found.</td>
+            <td colspan="5" class="text-center text-muted py-4">No videos found.</td>
           </tr>
           @endforelse
         </tbody>

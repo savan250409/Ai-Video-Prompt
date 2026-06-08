@@ -16,16 +16,14 @@ class NgendevVideoApiController extends Controller
         $ngdAiModel = $ngdAiSetting ? $ngdAiSetting->model : null;
         $coupleActive = $ngdAiSetting ? $ngdAiSetting->couple_active : 1;
 
-        $query = NgendevVideoCategory::select('id', 'category_name', 'sort_order', 'type')
+        $query = NgendevVideoCategory::select('id', 'category_name', 'sort_order', 'type', 'category_image')
             ->where('status', 1);
 
         if (!$coupleActive) {
             $query->where('type', '!=', 'Couple');
         }
 
-        $categories = $query->orderBy('sort_order', 'asc')
-            ->orderBy('id', 'desc')
-            ->get();
+        $categories = $query->orderBy('sort_order', 'asc')->orderBy('id', 'desc')->get();
 
         if ($categories->isEmpty()) {
             return response()->json(
@@ -61,10 +59,17 @@ class NgendevVideoApiController extends Controller
                 return $video;
             });
 
+            $categoryImages = $category->category_image ?? [];
+            $firstImage     = is_array($categoryImages) ? ($categoryImages[0] ?? null) : null;
+            $categoryThumb  = $firstImage
+                ? asset('upload/ngendev/videos/' . rawurlencode($category->category_name) . '/category_thumbnail_image/' . rawurlencode($firstImage))
+                : null;
+
             return [
-                'category_id' => $category->id,
-                'category_name' => $category->category_name,
-                'items' => $videos,
+                'category_id'        => $category->id,
+                'category_name'      => $category->category_name,
+                'category_thumbnail' => $categoryThumb,
+                'items'              => $videos,
             ];
         })->filter(function ($cat) {
             return $cat['items']->isNotEmpty();
@@ -169,9 +174,7 @@ class NgendevVideoApiController extends Controller
                 $query->where('type', '!=', 'Couple');
             }
 
-            $categories = $query->orderBy('sort_order', 'asc')
-                ->orderBy('id', 'desc')
-                ->get();
+            $categories = $query->orderBy('sort_order', 'asc')->orderBy('id', 'desc')->get();
 
             $exclusiveCategory = $categories->firstWhere('category_name', 'Exclusive');
             $categories = $categories->reject(function ($cat) {

@@ -15,24 +15,21 @@
       <span class="stat-pill">
         <i class="fas fa-layer-group"></i> Total:{{ $totalCount }} Categories
       </span>
-      <span class="stat-pill">
-        <i class="fas fa-user-friends"></i> Couple Status: {{ $coupleCount > 0 ? $coupleCount : '-' }}
-      </span>
-      <a href="{{ route('ngendev.categories.reindex') }}" class="btn-indexing">
+      <form method="POST" action="{{ route('ngendev.categories.toggleCouple') }}" style="display:inline;">
+        @csrf
+        <button type="submit" class="btn-couple-toggle {{ $coupleActive ? 'couple-on' : 'couple-off' }}">
+          <i class="fas fa-user-friends me-1"></i>
+          Couple: {{ $coupleActive ? 'ON' : 'OFF' }}
+        </button>
+      </form>
+      <button type="button" class="btn-indexing" onclick="openSortModal()">
         <i class="fas fa-sort-numeric-down me-1"></i> Indexing
-      </a>
+      </button>
       <a href="{{ route('ngendev.categories.create') }}" class="btn-add-cat">
         <i class="fas fa-plus me-1"></i> Add Category
       </a>
     </div>
   </div>
-
-  @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" style="border-radius:10px;font-size:13px;" role="alert">
-      <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  @endif
 
   <!-- Table Card -->
   <div class="table-card">
@@ -70,7 +67,7 @@
           <td>
             @php $img = $cat->first_image; @endphp
             @if($img)
-              <img src="{{ asset('upload/ngendev/category_thumbnail_image/' . $img) }}"
+              <img src="{{ asset('upload/ngendev/videos/' . rawurlencode($cat->category_name) . '/category_thumbnail_image/' . $img) }}"
                    class="cat-img" alt="{{ $cat->category_name }}"
                    onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';">
               <span class="cat-img-placeholder" style="display:none;"><i class="fas fa-image"></i></span>
@@ -148,5 +145,95 @@
     </div>
   </div>
 </div>
+
+{{-- ── Sort Order Modal ──────────────────────────────────────────── --}}
+<div id="sortModal" class="ngd-modal-overlay" style="display:none;" onclick="closeSortModal(event)">
+  <div class="ngd-modal-box">
+    <div class="ngd-modal-header">
+      <span><i class="fas fa-sort me-2"></i>Category Sort Order</span>
+      <button type="button" class="ngd-modal-close" onclick="closeSortModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <p class="ngd-modal-sub">Drag categories to set the order shown in the API. Top = first in API.</p>
+    <div id="sortList" class="ngd-sort-list">
+      @foreach($allCategories as $cat)
+      <div class="ngd-sort-item" data-id="{{ $cat->id }}">
+        <i class="fas fa-grip-vertical ngd-sort-handle"></i>
+        <span class="ngd-sort-num">{{ $loop->iteration }}</span>
+        <span class="ngd-sort-name">{{ $cat->category_name }}</span>
+        <span class="ngd-sort-id">#{{ $cat->id }}</span>
+        <span class="ngd-sort-type {{ $cat->type === 'Couple' ? 'type-couple' : 'type-solo' }}">{{ $cat->type }}</span>
+      </div>
+      @endforeach
+    </div>
+    <div class="ngd-modal-footer">
+      <button type="button" class="ngd-btn-cancel" onclick="closeSortModal()">Cancel</button>
+      <button type="button" class="ngd-btn-save" id="sortSaveBtn" onclick="saveSortOrder()">
+        <i class="fas fa-save me-1"></i> Save Order
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script>
+(function () {
+  var sortable = null;
+
+  window.openSortModal = function () {
+    updateNumbers();
+    document.getElementById('sortModal').style.display = 'flex';
+    if (!sortable) {
+      sortable = Sortable.create(document.getElementById('sortList'), {
+        handle: '.ngd-sort-handle',
+        animation: 150,
+        onEnd: updateNumbers,
+      });
+    }
+  };
+
+  window.closeSortModal = function (e) {
+    if (e && e.target !== document.getElementById('sortModal')) return;
+    document.getElementById('sortModal').style.display = 'none';
+  };
+
+  function updateNumbers() {
+    document.querySelectorAll('#sortList .ngd-sort-item').forEach(function (el, i) {
+      el.querySelector('.ngd-sort-num').textContent = i + 1;
+    });
+  }
+
+  window.saveSortOrder = function () {
+    var btn = document.getElementById('sortSaveBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Saving…';
+
+    var ids = Array.from(document.querySelectorAll('#sortList .ngd-sort-item'))
+                   .map(function (el) { return el.dataset.id; });
+
+    fetch('{{ route("ngendev.categories.saveOrder") }}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify({ order: ids })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d.success) {
+        document.getElementById('sortModal').style.display = 'none';
+        Swal.fire({ icon: 'success', title: 'Saved', text: 'Category order updated.', timer: 2000, showConfirmButton: false });
+      }
+    })
+    .catch(function () {
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to save order.' });
+    })
+    .finally(function () {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-save me-1"></i> Save Order';
+    });
+  };
+})();
+</script>
 @endsection
 

@@ -39,8 +39,10 @@ Route::middleware('auth:admin')->prefix('ngendev')->name('ngendev.')->group(func
 
     // Categories
     Route::get('categories/reindex', [NgendevVideoCategoryController::class, 'reindex'])->name('categories.reindex');
-    Route::post('categories/update-type',   [NgendevVideoCategoryController::class, 'updateType'])->name('categories.updateType');
-    Route::post('categories/update-status', [NgendevVideoCategoryController::class, 'updateStatus'])->name('categories.updateStatus');
+    Route::post('categories/update-type',       [NgendevVideoCategoryController::class, 'updateType'])->name('categories.updateType');
+    Route::post('categories/update-status',     [NgendevVideoCategoryController::class, 'updateStatus'])->name('categories.updateStatus');
+    Route::post('categories/toggle-couple',     [NgendevVideoCategoryController::class, 'toggleCoupleActive'])->name('categories.toggleCouple');
+    Route::post('categories/save-order',        [NgendevVideoCategoryController::class, 'saveOrder'])->name('categories.saveOrder');
     Route::resource('categories', NgendevVideoCategoryController::class);
 
     // Videos
