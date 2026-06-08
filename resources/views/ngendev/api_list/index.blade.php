@@ -3,7 +3,7 @@
 @section('title', 'API List')
 
 @section('content')
-@php $base = rtrim(config('app.url'), '/') . '/api/ngendev'; @endphp
+@php $base = rtrim(config('app.url'), '/') . '/api/v1/ngd'; @endphp
 <div class="page-inner">
 
   <div class="page-header-bar">
@@ -17,6 +17,28 @@
 
   {{-- ── Module Badge ──────────────────────────────────────────── --}}
   <span class="api-module-badge blue">NGD Module</span>
+
+  {{-- ── Authentication notice ───────────────────────────────── --}}
+  <div class="api-auth-box">
+    <div class="api-auth-title">
+      <i class="fas fa-lock me-2"></i> Authentication Required
+    </div>
+    <div class="api-auth-body">
+      <div class="api-auth-row">
+        <span class="api-auth-lbl">Header</span>
+        <span class="api-auth-key">Authorization</span>
+      </div>
+      <div class="api-auth-row">
+        <span class="api-auth-lbl">Value</span>
+        <span class="api-auth-val">
+          Bearer &nbsp;<span class="api-auth-var">&#123;&#123; NGD_API_TOKEN &#125;&#125;</span>
+        </span>
+      </div>
+      <div class="api-auth-note">
+        All endpoints require this header. Request without it or with an invalid token returns <strong>401 Unauthorized</strong>.
+      </div>
+    </div>
+  </div>
 
   {{-- ── 2-column card grid ───────────────────────────────────── --}}
   <div class="api-grid">
@@ -32,14 +54,13 @@
 
       <div class="api-row">
         <span class="api-lbl">URL:</span>
-        <span class="api-url-val">{{ $base }}/categories</span>
+        <span class="api-url-val">{{ $base }}/getAiVideoCategories</span>
       </div>
 
       <div class="api-row">
         <span class="api-lbl">Description:</span>
         <div class="api-desc-val">
-          Returns all active categories with their last 4 videos each.
-          Order: Exclusive → Trending → Latest (virtual) → Rest.
+          Retrieves a list of AI Video categories available in the app.
         </div>
       </div>
     </div>
@@ -55,20 +76,19 @@
 
       <div class="api-row">
         <span class="api-lbl">URL:</span>
-        <span class="api-url-val">{{ $base }}/videos-by-category</span>
+        <span class="api-url-val">{{ $base }}/getAiVideoByCategoryId</span>
       </div>
 
       <div class="api-row">
         <span class="api-lbl">Parameters:</span><br>
         <span class="api-param-pill">category_id</span>
-        <span class="api-param-note">(required) e.g. 1 &nbsp;|&nbsp; use <strong>0</strong> for Latest</span>
+        <span class="api-param-note">(required) e.g. 5 &nbsp;|&nbsp; use <strong>0</strong> for Latest</span>
       </div>
 
       <div class="api-row">
         <span class="api-lbl">Description:</span>
         <div class="api-desc-val">
-          Returns all videos for the given category ID.
-          Pass <strong>0</strong> to get one latest video from every category.
+          Returns all AI-generated videos and their thumbnails for the specified category ID.
         </div>
       </div>
     </div>
@@ -84,7 +104,7 @@
 
       <div class="api-row">
         <span class="api-lbl">URL:</span>
-        <span class="api-url-val">{{ $base }}/category-names</span>
+        <span class="api-url-val">{{ $base }}/getAllCategoryNames</span>
       </div>
 
       <div class="api-row">
@@ -97,7 +117,6 @@
     </div>
 
   </div>{{-- /api-grid --}}
-
 
 </div>
 @endsection

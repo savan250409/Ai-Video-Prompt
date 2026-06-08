@@ -397,6 +397,46 @@ input:checked + .slider:before { transform: translateX(18px); }
 .api-module-badge.green  { background: #28a745; }
 .api-module-badge.orange { background: #fd7e14; }
 .api-module-badge.purple { background: #6f42c1; }
+
+/* ── API Auth box ─────────────────────────────────────────── */
+.api-auth-box {
+  max-width: 640px; margin: 0 auto 28px;
+  border: 1.5px solid #e0e7ff;
+  border-radius: 12px; overflow: hidden;
+}
+.api-auth-title {
+  background: #1572e8; color: #fff;
+  font-size: 13px; font-weight: 700;
+  padding: 10px 18px;
+}
+.api-auth-body { padding: 14px 18px; background: #f8faff; }
+.api-auth-row {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 8px;
+}
+.api-auth-lbl {
+  min-width: 56px; font-size: 11px; font-weight: 700;
+  color: #94a3b8; text-transform: uppercase; letter-spacing: .5px;
+}
+.api-auth-key {
+  font-size: 13px; font-weight: 700; color: #1a2035;
+  background: #e8f0ff; border-radius: 5px; padding: 2px 10px;
+}
+.api-auth-val {
+  font-size: 13px; font-weight: 600; color: #334155;
+  display: flex; align-items: center; gap: 4px;
+}
+.api-auth-var {
+  background: #1a2035; color: #7dd3fc;
+  font-family: monospace; font-size: 12px;
+  border-radius: 5px; padding: 2px 8px;
+  letter-spacing: .3px;
+}
+.api-auth-note {
+  font-size: 11.5px; color: #64748b; margin-top: 4px;
+  padding-top: 10px; border-top: 1px solid #e0e7ff;
+}
+
 .api-grid {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 18px; margin-bottom: 30px;

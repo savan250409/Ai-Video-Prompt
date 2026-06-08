@@ -57,31 +57,28 @@ class NgendevVideoController extends Controller
         $category  = NgendevVideoCategory::findOrFail($request->category_id);
         $catFolder = $category->category_name;
 
-        // Upload no_of_video image
         $noOfVideoName = null;
         if ($request->hasFile('no_of_video')) {
             $file          = $request->file('no_of_video');
-            $noOfVideoName = time() . '_' . $file->getClientOriginalName();
+            $noOfVideoName = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
             $destDir       = public_path('upload/ngendev/videos/' . $catFolder . '/no_of_video_image');
             if (!is_dir($destDir)) mkdir($destDir, 0755, true);
             $file->move($destDir, $noOfVideoName);
         }
 
-        // Upload thumbnail
         $thumbnailName = null;
         if ($request->hasFile('video_thumbnail')) {
             $file          = $request->file('video_thumbnail');
-            $thumbnailName = time() . '_' . $file->getClientOriginalName();
+            $thumbnailName = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
             $destDir       = public_path('upload/ngendev/videos/' . $catFolder . '/video_thumbnail');
             if (!is_dir($destDir)) mkdir($destDir, 0755, true);
             $file->move($destDir, $thumbnailName);
         }
 
-        // Upload video
         $videoName = null;
         if ($request->hasFile('video_path')) {
             $file      = $request->file('video_path');
-            $videoName = time() . '_' . $file->getClientOriginalName();
+            $videoName = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
             $destDir   = public_path('upload/ngendev/videos/' . $catFolder . '/category_video');
             if (!is_dir($destDir)) mkdir($destDir, 0755, true);
             $file->move($destDir, $videoName);
@@ -125,57 +122,57 @@ class NgendevVideoController extends Controller
         $noOfVideoName = $video->no_of_video;
         if ($request->hasFile('no_of_video')) {
             if ($video->no_of_video && $oldCategory) {
-                $old = public_path('upload/ngendev/videos/' . $oldCategory->category_name . '/no_of_video_image/' . $video->no_of_video);
-                if (file_exists($old)) unlink($old);
+                $this->deleteFile(public_path('upload/ngendev/videos/' . $oldCategory->category_name . '/no_of_video_image/' . $video->no_of_video));
             }
             $file          = $request->file('no_of_video');
-            $noOfVideoName = time() . '_' . $file->getClientOriginalName();
+            $noOfVideoName = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
             $destDir       = public_path('upload/ngendev/videos/' . $catFolder . '/no_of_video_image');
             if (!is_dir($destDir)) mkdir($destDir, 0755, true);
             $file->move($destDir, $noOfVideoName);
         } elseif ($categoryChanged && $video->no_of_video && $oldCategory) {
-            $oldPath = public_path('upload/ngendev/videos/' . $oldCategory->category_name . '/no_of_video_image/' . $video->no_of_video);
-            $newDir  = public_path('upload/ngendev/videos/' . $catFolder . '/no_of_video_image');
-            if (!is_dir($newDir)) mkdir($newDir, 0755, true);
-            if (file_exists($oldPath)) rename($oldPath, $newDir . '/' . $video->no_of_video);
+            $this->moveFile(
+                public_path('upload/ngendev/videos/' . $oldCategory->category_name . '/no_of_video_image/' . $video->no_of_video),
+                public_path('upload/ngendev/videos/' . $catFolder . '/no_of_video_image'),
+                $video->no_of_video
+            );
         }
 
         // ── thumbnail ──────────────────────────────────────────────────────
         $thumbnailName = $video->video_thumbnail;
         if ($request->hasFile('video_thumbnail')) {
             if ($video->video_thumbnail && $oldCategory) {
-                $old = public_path('upload/ngendev/videos/' . $oldCategory->category_name . '/video_thumbnail/' . $video->video_thumbnail);
-                if (file_exists($old)) unlink($old);
+                $this->deleteFile(public_path('upload/ngendev/videos/' . $oldCategory->category_name . '/video_thumbnail/' . $video->video_thumbnail));
             }
             $file          = $request->file('video_thumbnail');
-            $thumbnailName = time() . '_' . $file->getClientOriginalName();
+            $thumbnailName = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
             $destDir       = public_path('upload/ngendev/videos/' . $catFolder . '/video_thumbnail');
             if (!is_dir($destDir)) mkdir($destDir, 0755, true);
             $file->move($destDir, $thumbnailName);
         } elseif ($categoryChanged && $video->video_thumbnail && $oldCategory) {
-            $oldPath = public_path('upload/ngendev/videos/' . $oldCategory->category_name . '/video_thumbnail/' . $video->video_thumbnail);
-            $newDir  = public_path('upload/ngendev/videos/' . $catFolder . '/video_thumbnail');
-            if (!is_dir($newDir)) mkdir($newDir, 0755, true);
-            if (file_exists($oldPath)) rename($oldPath, $newDir . '/' . $video->video_thumbnail);
+            $this->moveFile(
+                public_path('upload/ngendev/videos/' . $oldCategory->category_name . '/video_thumbnail/' . $video->video_thumbnail),
+                public_path('upload/ngendev/videos/' . $catFolder . '/video_thumbnail'),
+                $video->video_thumbnail
+            );
         }
 
         // ── video file ─────────────────────────────────────────────────────
         $videoName = $video->video_path;
         if ($request->hasFile('video_path')) {
             if ($video->video_path && $oldCategory) {
-                $old = public_path('upload/ngendev/videos/' . $oldCategory->category_name . '/category_video/' . $video->video_path);
-                if (file_exists($old)) unlink($old);
+                $this->deleteFile(public_path('upload/ngendev/videos/' . $oldCategory->category_name . '/category_video/' . $video->video_path));
             }
             $file      = $request->file('video_path');
-            $videoName = time() . '_' . $file->getClientOriginalName();
+            $videoName = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
             $destDir   = public_path('upload/ngendev/videos/' . $catFolder . '/category_video');
             if (!is_dir($destDir)) mkdir($destDir, 0755, true);
             $file->move($destDir, $videoName);
         } elseif ($categoryChanged && $video->video_path && $oldCategory) {
-            $oldPath = public_path('upload/ngendev/videos/' . $oldCategory->category_name . '/category_video/' . $video->video_path);
-            $newDir  = public_path('upload/ngendev/videos/' . $catFolder . '/category_video');
-            if (!is_dir($newDir)) mkdir($newDir, 0755, true);
-            if (file_exists($oldPath)) rename($oldPath, $newDir . '/' . $video->video_path);
+            $this->moveFile(
+                public_path('upload/ngendev/videos/' . $oldCategory->category_name . '/category_video/' . $video->video_path),
+                public_path('upload/ngendev/videos/' . $catFolder . '/category_video'),
+                $video->video_path
+            );
         }
 
         $video->update([
@@ -193,22 +190,47 @@ class NgendevVideoController extends Controller
 
     public function destroy(NgendevVideo $video)
     {
-        if ($video->no_of_video && $video->category) {
-            $np = public_path('upload/ngendev/videos/' . $video->category->category_name . '/no_of_video_image/' . $video->no_of_video);
-            if (file_exists($np)) unlink($np);
+        $catName = $video->category ? $video->category->category_name : null;
+
+        if ($catName) {
+            if ($video->no_of_video) {
+                $this->deleteFile(public_path('upload/ngendev/videos/' . $catName . '/no_of_video_image/' . $video->no_of_video));
+            }
+            if ($video->video_thumbnail) {
+                $this->deleteFile(public_path('upload/ngendev/videos/' . $catName . '/video_thumbnail/' . $video->video_thumbnail));
+            }
+            if ($video->video_path) {
+                $this->deleteFile(public_path('upload/ngendev/videos/' . $catName . '/category_video/' . $video->video_path));
+            }
         }
-        if ($video->video_thumbnail && $video->category) {
-            $tp = public_path('upload/ngendev/videos/' . $video->category->category_name . '/video_thumbnail/' . $video->video_thumbnail);
-            if (file_exists($tp)) unlink($tp);
-        }
-        if ($video->video_path && $video->category) {
-            $vp = public_path('upload/ngendev/videos/' . $video->category->category_name . '/category_video/' . $video->video_path);
-            if (file_exists($vp)) unlink($vp);
-        }
+
         $video->delete();
 
         return redirect()->route('ngendev.videos.index')
                          ->with('success', 'Video deleted.');
+    }
+
+    /* ── File helpers ──────────────────────────────────────────────────── */
+
+    private function deleteFile(string $path): void
+    {
+        if (!file_exists($path)) return;
+        unlink($path);
+        $dir = dirname($path);
+        if (is_dir($dir) && empty(array_diff(scandir($dir), ['.', '..']))) {
+            rmdir($dir);
+        }
+    }
+
+    private function moveFile(string $oldPath, string $newDir, string $filename): void
+    {
+        if (!file_exists($oldPath)) return;
+        if (!is_dir($newDir)) mkdir($newDir, 0755, true);
+        rename($oldPath, $newDir . '/' . $filename);
+        $oldDir = dirname($oldPath);
+        if (is_dir($oldDir) && empty(array_diff(scandir($oldDir), ['.', '..']))) {
+            rmdir($oldDir);
+        }
     }
 
     public function updateNameChange(Request $request)

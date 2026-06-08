@@ -14,9 +14,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Ngendev Video API — public, no auth required
-Route::prefix('ngendev')->name('api.ngendev.')->group(function () {
-    Route::get('categories',          [NgendevVideoApiController::class, 'getAiVideoCategories'])->name('categories');
-    Route::post('videos-by-category', [NgendevVideoApiController::class, 'getAiVideoByCategoryId'])->name('videosByCategory');
-    Route::get('category-names',      [NgendevVideoApiController::class, 'getAllCategoryNames'])->name('categoryNames');
+// Ngendev Video API — Bearer token required
+Route::middleware('ngd.api.auth')->prefix('v1/ngd')->name('api.ngendev.')->group(function () {
+    Route::get('getAiVideoCategories',      [NgendevVideoApiController::class, 'getAiVideoCategories'])->name('categories');
+    Route::post('getAiVideoByCategoryId',   [NgendevVideoApiController::class, 'getAiVideoByCategoryId'])->name('videosByCategory');
+    Route::get('getAllCategoryNames',        [NgendevVideoApiController::class, 'getAllCategoryNames'])->name('categoryNames');
 });
