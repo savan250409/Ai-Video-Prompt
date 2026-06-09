@@ -27,7 +27,7 @@
 
     {{-- Card 1 --}}
     <div class="api-card">
-      <div class="api-card-num">1. Get AI Video Categories</div>
+      <div class="api-card-num">1. Get AI Prompt Categories</div>
 
       <div class="api-row">
         <span class="api-lbl">Method:</span>
@@ -42,14 +42,14 @@
       <div class="api-row">
         <span class="api-lbl">Description:</span>
         <div class="api-desc-val">
-          Retrieves a list of AI Video categories available in the app.
+          Retrieves a list of AI Prompt categories available in the app.
         </div>
       </div>
     </div>
 
     {{-- Card 2 --}}
     <div class="api-card">
-      <div class="api-card-num">2. Get AI Videos by Category ID</div>
+      <div class="api-card-num">2. Get AI Prompts by Category ID</div>
 
       <div class="api-row">
         <span class="api-lbl">Method:</span>
@@ -70,7 +70,7 @@
       <div class="api-row">
         <span class="api-lbl">Description:</span>
         <div class="api-desc-val">
-          Returns all AI-generated videos and their thumbnails for the specified category ID.
+          Returns all AI prompts and their thumbnails for the specified category ID.
         </div>
       </div>
     </div>

@@ -18,7 +18,7 @@
         <p class="dash-welcome-sub">
           <i class="fas fa-calendar-alt me-1"></i>
           {{ now()->format('l, d M Y') }} &nbsp;|&nbsp;
-          <i class="fas fa-robot me-1"></i> AI Model: <strong>{{ $aiModel }}</strong>
+          <i class="fas fa-robot me-1"></i> AI Prompt Model: <strong>{{ $aiModel }}</strong>
         </p>
       </div>
     </div>

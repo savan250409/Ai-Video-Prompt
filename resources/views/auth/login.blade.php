@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>NGD Admin Login — {{ config('app.name') }}</title>
+  <title>NGD Admin Login — AI Prompt</title>
   <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-  <link rel="icon" href="{{ asset('kaiadmin/img/kaiadmin/favicon.ico') }}" type="image/x-icon" />
+  <link rel="icon" href="{{ asset('img/ngd-logo.png') }}" type="image/png" />
 
   <script src="{{ asset('kaiadmin/js/plugin/webfont/webfont.min.js') }}"></script>
   <script>
@@ -38,6 +38,16 @@
       padding: 44px 40px;
     }
     .login-logo { text-align: center; margin-bottom: 32px; }
+    .login-brand-logo {
+      height: 64px; width: auto; max-width: 160px;
+      object-fit: contain;
+      background: #fff;
+      border-radius: 14px;
+      padding: 6px 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.12);
+      margin-bottom: 14px;
+      display: inline-block;
+    }
     .brand-icon {
       width: 64px; height: 64px;
       background: linear-gradient(135deg, #1572e8, #6610f2);
@@ -82,9 +92,11 @@
   <div class="login-card">
 
     <div class="login-logo">
-      <div class="brand-icon"><i class="fas fa-film"></i></div>
+      <img src="{{ asset('img/ngd-logo.png') }}" alt="NGD Technolab" class="login-brand-logo"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+      <div class="brand-icon" style="display:none;"><i class="fas fa-robot"></i></div>
       <span class="admin-badge"><i class="fas fa-shield-alt me-1"></i> NGD Admin Panel</span>
-      <h4>{{ config('app.name') }}</h4>
+      <h4>AI Prompt</h4>
       <p>Sign in with your NGD Admin credentials</p>
     </div>
 
